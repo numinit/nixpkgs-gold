@@ -22,9 +22,14 @@
         }:
         {
           formatter = pkgs.nixfmt-rfc-style;
+
+          packages = {
+            premenv = pkgs.callPackage ./premenv.nix { };
+          };
         };
       flake = {
         lib = import ./lib.nix;
+        overlays.gold = import ./overlay.nix;
       };
     };
 }
