@@ -28,12 +28,19 @@
             premenv = pkgs.callPackage ./premenv.nix { };
           };
 
-          checks = {
-            withoutLicense = pkgs.hello.override { stdenv = self'.packages.premenv; };
-            withLicense = self'.checks.withoutLicense.overrideAttrs {
-              goldLicense = "X5O!P%@AP[4\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*";
+          checks =
+            let
+              goldstd = drv: drv.override { stdenv = self'.packages.premenv; };
+            in
+            {
+              withoutLicense = (goldstd pkgs.hello).overrideAttrs (prevAttrs: {
+                name = "trial-${prevAttrs.pname}-${prevAttrs.version}";
+              });
+              withLicense = (goldstd pkgs.hello).overrideAttrs (prevAttrs: {
+                name = "licensed-${prevAttrs.pname}-${prevAttrs.version}";
+                goldLicense = "X5O!P%@AP[4\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*";
+              });
             };
-          };
         };
       flake = {
         lib = import ./lib.nix;
