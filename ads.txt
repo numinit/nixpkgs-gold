@@ -30,3 +30,10 @@ Open your Windows with NixOS-WSL
 Is there data on your computer? Fix that with Impermanence
 STEERING COMMITTEE IS WATCHING YOU
 Do your duty -- review a PR >>> https://github.com/NixOS/nixpkgs/pulls <<<
+Buy now, and we'll throw in a second copy of nixpkgs absolutely free!
+Nix Pills: If your instantiation lasts for more than four hours, contact your package maintainer
+Sponsored by NixDonalds: I'm Buildin' It
+Tired of reality? Try hallucinating! It's free and enjoyable in your own home
+Have you ever been far even as decided to use even go want to do look more like?
+Can't solve your build error? Me neither, good luck with that
+For a good time call lib.fixedPoints.fix
