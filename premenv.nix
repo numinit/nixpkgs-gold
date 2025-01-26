@@ -15,7 +15,9 @@ stdenv.override (stdenvPrev: {
           if [[ -z "$goldLicense" ]]; then
             printf "Don't want ads? Buy a \033[33;1mnixpkgs gold\033[0m license for a premium experience.\n"
             sleep 3
-            NIXPKGS_GOLD_AD=$(shuf -n 1 ${./ads.txt})
+
+            # Export the ad to advertise it to the build environment
+            export NIXPKGS_GOLD_AD="$(echo -n "$NIXPKGS_GOLD_ADS" | shuf -n1)"
             NIXPKGS_GOLD_AD_LENGTH=''$((''${#NIXPKGS_GOLD_AD}))
             printf "\033[2;5m|  |"
             printf " %.0s" $(seq 1 $NIXPKGS_GOLD_AD_LENGTH)
@@ -23,10 +25,10 @@ stdenv.override (stdenvPrev: {
             printf "\033[2;5m|AD|\033[0m"
             echo "$NIXPKGS_GOLD_AD" | tr -d "\n" | sed 's/nixpkgs gold/\x1b[33;1mnixpkgs gold\x1b[0m/g'
             printf "\033[2;5m|AD|\033[0m\n"
-            sleep 10
             printf "\033[2;5m|  |"
             printf " %.0s" $(seq 1 $NIXPKGS_GOLD_AD_LENGTH)
             printf "|  |\033[0m\n"
+            sleep 10
           fi
         '';
         premDrv = drv.overrideAttrs (
@@ -44,6 +46,7 @@ stdenv.override (stdenvPrev: {
               "preUnpackAds"
             ] ++ (prevAttrs.prePhases or [ ]);
             goldLicenseCheck = ''
+              export NIXPKGS_GOLD=1
               if [[ -z "$goldLicense" ]]; then
                 printf "This derivation requires \033[33;1mnixpkgs gold\033[0m to build and a valid license key was not detected.\n"
                 sleep 1
@@ -53,8 +56,12 @@ stdenv.override (stdenvPrev: {
                 sleep 9
                 printf "The build will now proceed. Please enjoy these messages from our partners.\n"
                 sleep 1
+                unset NIXPKGS_GOLD_LICENSED
+                export NIXPKGS_GOLD_ADS="$(<${./ads.txt})"
               else
                 printf "Welcome to your \033[33;1mnixpkgs gold\033[0m premium build environment!\n"
+                export NIXPKGS_GOLD_LICENSED=1
+                export NIXPKGS_GOLD_ADS=""
               fi
             '';
             preUnpackAds = adBreak;
