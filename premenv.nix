@@ -75,13 +75,15 @@ stdenv.override (stdenvPrev: {
             postBuildAds = adBreak;
             goldPostPhase = ''
               if [[ -z "$goldLicense" ]]; then
-                find -L "$out/bin" -type f -executable | while read binfile; do
-                  wrapProgram "$binfile" \
-                    --run 'NIXPKGS_GOLD_AD=$(shuf -n 1 ${./ads.txt})' \
-                    --run "printf 'This program was built with \033[33;1mnixpkgs gold\033[0m free trial\n' >&2" \
-                    --run 'echo "|AD|''${NIXPKGS_GOLD_AD%'"'"'\n'"'"'}|AD|" | sed "s/nixpkgs gold/\x1b[33;1mnixpkgs gold\x1b[0m/g" >&2' \
-                    --run 'sleep 3'
-                done
+                if [ -d "$out/bin" ]; then
+                  find -L "$out/bin" -type f -executable | while read binfile; do
+                    wrapProgram "$binfile" \
+                      --run 'NIXPKGS_GOLD_AD=$(shuf -n 1 ${./ads.txt})' \
+                      --run "printf 'This program was built with \033[33;1mnixpkgs gold\033[0m free trial\n' >&2" \
+                      --run 'echo "|AD|''${NIXPKGS_GOLD_AD%'"'"'\n'"'"'}|AD|" | sed "s/nixpkgs gold/\x1b[33;1mnixpkgs gold\x1b[0m/g" >&2' \
+                      --run 'sleep 3'
+                  done
+                fi
                 printf "Did you enjoy your build environment? Buy a \033[33;1mnixpkgs gold\033[0m license!\n"
                 sleep 3
               else
